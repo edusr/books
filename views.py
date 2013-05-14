@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from models import Book
-from forms import ContactForm
+from models import Book,Publisher,Author
+from forms import ContactForm, InsertBookForm
 from django.core.mail import send_mail
 
 def search_form(request):
@@ -31,3 +31,18 @@ def contact(request):
     else:
         form = ContactForm(initial={'subject': 'I love your site!'})
     return render(request, 'contact_form.html', {'form': form})
+
+def insert_book(request):
+    if request.method == 'POST':
+        form = InsertBookForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            book = Book(title=cd['title'],publisher=Publisher.objects.get(id=cd['publisher']),publication_date=cd['publication_date'])
+            book.save();
+            authors=Author.objects.get(id=cd['authors'])
+            book.authors.add(authors)
+            return HttpResponseRedirect('/contact/thanks/')
+
+    else:
+        form = InsertBookForm(initial={'title': 'I love your site!'})
+    return render(request, 'insert_book.html', {'form': form})

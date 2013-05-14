@@ -9,15 +9,18 @@ class Publisher(models.Model):
 	website = models.URLField()
 
 	def __unicode__(self):
-		return self.name
+		return u'%s' %(self.name)
 
 class Author(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     email = models.EmailField(blank=True)
 
+    def soma(self):
+        return 1+3
+
     def __unicode__(self):
-    	return u'%s %s' %(self.first_name, self.last_name)
+    	return u'%s' %(self.first_name)
 
 class Book(models.Model):
     title = models.CharField(max_length=100)
